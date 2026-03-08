@@ -55,6 +55,7 @@ export default function ChatWindow({ messages, isTyping }) {
               key={i}
               role={msg.role}
               content={msg.content}
+              rawData={msg.rawData}
               isNew={i === messages.length - 1 || (i === messages.length - 2 && isTyping)}
             />
           ))}

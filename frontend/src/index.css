@@ -346,3 +346,142 @@ textarea {
 .btn-google:active {
   transform: translateY(0);
 }
+
+/* ─── Email Summary Cards ─── */
+.email-summary {
+  width: 100%;
+}
+
+.email-summary-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+  color: var(--color-text);
+}
+
+.email-summary-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--color-accent) 22%, transparent);
+  color: var(--color-accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0 7px;
+}
+
+.email-summary-empty {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.email-priority-section {
+  margin-bottom: 18px;
+}
+
+.email-priority-section:last-child {
+  margin-bottom: 0;
+}
+
+.email-priority-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-secondary) 40%, transparent);
+}
+
+.email-priority-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: color-mix(in oklab, currentColor 15%, transparent);
+  padding: 0 5px;
+}
+
+.email-card {
+  border-left: 4px solid;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid color-mix(in oklab, var(--color-secondary) 32%, transparent);
+  border-left-width: 4px;
+}
+
+.email-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px color-mix(in oklab, black 28%, transparent);
+}
+
+.email-card:last-child {
+  margin-bottom: 0;
+}
+
+.email-card-subject {
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 4px;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+.email-card-meta {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.email-card-label {
+  font-weight: 600;
+  color: color-mix(in oklab, var(--color-text-muted) 88%, white 12%);
+}
+
+.email-card-summary {
+  font-size: 0.86rem;
+  color: color-mix(in oklab, var(--color-text) 82%, var(--color-text-muted) 18%);
+  line-height: 1.55;
+  margin-bottom: 6px;
+}
+
+.email-card-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.email-card-action-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: color-mix(in oklab, var(--color-accent) 16%, transparent);
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chat-bubble-wide {
+  max-width: min(92%, 960px) !important;
+}

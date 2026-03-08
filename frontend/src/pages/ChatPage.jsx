@@ -18,7 +18,14 @@ export default function ChatPage() {
 
       try {
         const data = await sendChatMessage(text, user?.email);
-        const aiMsg = { role: 'ai', content: data.response || data.message || 'No response received.' };
+        const responseText = data.response || data.message || data.output || data.text || '';
+        // Keep raw for structured rendering; also stash full data as fallback
+        const rawData = data.raw || data;
+        const aiMsg = {
+          role: 'ai',
+          content: typeof responseText === 'string' ? responseText : JSON.stringify(responseText),
+          rawData,
+        };
         setMessages((prev) => [...prev, aiMsg]);
       } catch (err) {
         const errorMsg = {
