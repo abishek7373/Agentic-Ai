@@ -1,0 +1,348 @@
+@import "tailwindcss";
+
+/* ─── Theme Tokens ─── */
+@theme {
+  --color-primary: #1B1F3B;
+  --color-primary-light: #232848;
+  --color-accent: #FF6F61;
+  --color-accent-hover: #e85d50;
+  --color-secondary: #3B4D88;
+  --color-secondary-light: #4a5f9e;
+  --color-neutral: #C4C4C4;
+  --color-neutral-dim: #8a8a9a;
+  --color-text: #E8E8F0;
+  --color-text-muted: #9090A8;
+  --font-orbitron: 'Orbitron', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* ─── Base Styles ─── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background:
+    radial-gradient(1200px 480px at 10% -10%, color-mix(in oklab, var(--color-secondary) 35%, transparent), transparent 60%),
+    radial-gradient(1000px 420px at 90% 0%, color-mix(in oklab, var(--color-accent) 16%, transparent), transparent 62%),
+    var(--color-primary);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-secondary) 88%, white 12%);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary-light);
+}
+
+/* ─── Animations ─── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes typing-dot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ─── Particle Background (login) ─── */
+.particles-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--color-accent) 22%, transparent);
+  animation: float var(--duration) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+/* ─── Reusable Surface Styles ─── */
+.ui-shell {
+  height: 100%;
+  padding: 20px;
+}
+
+.ui-glass {
+  background: color-mix(in oklab, var(--color-primary-light) 84%, black 16%);
+  border: 1px solid color-mix(in oklab, var(--color-secondary) 50%, transparent);
+  box-shadow: 0 12px 36px color-mix(in oklab, black 35%, transparent);
+}
+
+.ui-soft-border {
+  border: 1px solid color-mix(in oklab, var(--color-secondary) 56%, transparent);
+}
+
+.ui-muted {
+  color: color-mix(in oklab, var(--color-text-muted) 84%, white 16%);
+}
+
+.chat-scroll-area {
+  padding: 18px 20px 24px;
+}
+
+.chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.chat-row {
+  width: 100%;
+  display: flex;
+}
+
+.chat-row-user {
+  justify-content: flex-end;
+}
+
+.chat-row-ai {
+  justify-content: flex-start;
+}
+
+.chat-bubble {
+  max-width: min(82%, 860px);
+  border-radius: 18px;
+  padding: 14px 18px;
+  line-height: 1.72;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 16px color-mix(in oklab, black 22%, transparent);
+}
+
+.chat-bubble-user {
+  background: linear-gradient(135deg, #ff7367 0%, #ff6f61 100%);
+  color: #fff;
+  border: 1px solid color-mix(in oklab, #ff6f61 76%, white 24%);
+  border-bottom-right-radius: 8px;
+}
+
+.chat-bubble-ai {
+  background: color-mix(in oklab, var(--color-secondary) 84%, black 16%);
+  color: var(--color-text);
+  border: 1px solid color-mix(in oklab, var(--color-secondary-light) 46%, transparent);
+  border-bottom-left-radius: 8px;
+}
+
+.chat-bubble-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (min-width: 768px) {
+  .ui-shell {
+    padding: 26px;
+  }
+
+  .chat-scroll-area {
+    padding: 24px 30px 30px;
+  }
+
+  .chat-bubble {
+    max-width: min(76%, 860px);
+    padding: 15px 20px;
+    font-size: 0.97rem;
+  }
+}
+
+.ui-btn {
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.chat-composer {
+  flex-shrink: 0;
+  background: color-mix(in oklab, var(--color-primary-light) 82%, black 18%);
+  border-top: 1px solid color-mix(in oklab, var(--color-secondary) 45%, transparent);
+  padding: 14px 16px 16px;
+}
+
+.chat-composer-row {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.chat-input-shell {
+  flex: 1;
+  min-height: 58px;
+  border-radius: 18px;
+  padding: 11px 16px;
+  background: color-mix(in oklab, var(--color-primary) 86%, black 14%);
+  border: 1px solid color-mix(in oklab, var(--color-secondary) 60%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, white 7%, transparent);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.chat-input-shell:focus-within {
+  border-color: color-mix(in oklab, var(--color-accent) 55%, white 45%);
+  box-shadow:
+    0 0 0 2px color-mix(in oklab, var(--color-accent) 18%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 10%, transparent);
+}
+
+.chat-textarea {
+  width: 100%;
+  min-height: 24px;
+  max-height: 150px;
+  resize: none;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--color-text);
+  line-height: 1.55;
+  font-size: 0.97rem;
+  letter-spacing: 0.01em;
+}
+
+.chat-textarea::placeholder {
+  color: color-mix(in oklab, var(--color-text-muted) 78%, white 22%);
+}
+
+.chat-send-btn {
+  height: 58px;
+  min-width: 108px;
+  border: 0;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  background: linear-gradient(135deg, #ff786d 0%, #ff6f61 100%);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 10px 20px color-mix(in oklab, #ff6f61 38%, transparent);
+  transition: transform 0.16s ease, filter 0.16s ease, opacity 0.16s ease;
+}
+
+.chat-send-btn:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+.chat-send-btn:active {
+  transform: translateY(0);
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (min-width: 768px) {
+  .chat-composer {
+    padding: 16px 22px 18px;
+  }
+
+  .chat-composer-row {
+    gap: 12px;
+  }
+
+  .chat-input-shell {
+    min-height: 60px;
+    padding: 12px 18px;
+  }
+
+  .chat-send-btn {
+    height: 60px;
+    min-width: 116px;
+  }
+}
+
+/* ─── Google Login Button ─── */
+.btn-google {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 13px 24px;
+  border: 1px solid color-mix(in oklab, var(--color-secondary) 72%, transparent);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  background: color-mix(in oklab, var(--color-primary-light) 87%, black 13%);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  letter-spacing: 0.2px;
+}
+
+.btn-google:hover {
+  background: color-mix(in oklab, var(--color-primary-light) 93%, white 7%);
+  border-color: color-mix(in oklab, var(--color-secondary-light) 86%, white 14%);
+  transform: translateY(-1px);
+}
+
+.btn-google:active {
+  transform: translateY(0);
+}

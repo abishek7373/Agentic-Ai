@@ -1,0 +1,310 @@
+/* ─── Global Reset & Variables ─── */
+
+:root {
+  --color-bg: #0f1117;
+  --color-surface: #1a1d27;
+  --color-border: #2a2d3a;
+  --color-primary: #4285f4;
+  --color-primary-hover: #5a9cf6;
+  --color-text: #e8eaed;
+  --color-text-muted: #9aa0a6;
+  --color-success: #34a853;
+  --color-error: #ea4335;
+  --radius: 10px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+/* ─── App Container ─── */
+
+.app-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* ─── Login Page ─── */
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+}
+
+.login-page h1 {
+  font-size: 2.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-page .subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+}
+
+.login-error {
+  color: var(--color-error);
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* ─── Dashboard ─── */
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.user-info .user-name {
+  font-weight: 600;
+}
+
+.user-info .user-email {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+/* ─── Action Buttons ─── */
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  flex: 1;
+  min-width: 160px;
+  padding: 0.85rem 1.2rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #fff;
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.action-btn.chat {
+  background: var(--color-primary);
+}
+.action-btn.chat:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.action-btn.gmail {
+  background: #ea4335;
+}
+.action-btn.gmail:hover:not(:disabled) {
+  background: #f15a4e;
+}
+
+.action-btn.format {
+  background: #9c27b0;
+}
+.action-btn.format:hover:not(:disabled) {
+  background: #ab47bc;
+}
+
+.action-btn.calendar {
+  background: var(--color-success);
+}
+.action-btn.calendar:hover:not(:disabled) {
+  background: #46b862;
+}
+
+/* ─── Section Panels ─── */
+
+.section-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ─── Form Elements ─── */
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.35rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+/* ─── Status Messages ─── */
+
+.status-error {
+  color: var(--color-error);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+.status-success {
+  color: var(--color-success);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+.status-success a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* ─── Response Panel ─── */
+
+.response-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  min-height: 200px;
+}
+
+.response-panel h3 {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+}
+
+.response-panel .placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.response-panel .error {
+  color: var(--color-error);
+}
+
+.loading-spinner {
+  color: var(--color-primary);
+  font-style: italic;
+}
+
+/* ─── Data Cards ─── */
+
+.data-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.data-card .card-title {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.data-card .card-meta {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.data-card .card-snippet {
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+  color: var(--color-text-muted);
+}
+
+.chat-response {
+  padding: 1rem;
+  background: var(--color-bg);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
