@@ -8,7 +8,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { exchangeCodeForTokens } = require('../services/googleAuth');
+const { exchangeCodeForTokens, clearTokens } = require('../services/googleAuth');
 
 /**
  * POST /auth/google
@@ -42,6 +42,19 @@ router.post('/google', async (req, res) => {
       .status(isConfigError ? 500 : 401)
       .json({ error: isConfigError ? 'OAuth configuration error' : 'Authentication failed', details: err.message });
   }
+});
+
+/**
+ * POST /auth/logout
+ *
+ * Body: { email: "user@gmail.com" }  (optional — clears that user's tokens)
+ * Returns: { success: true }
+ */
+router.post('/logout', (req, res) => {
+  const { email } = req.body || {};
+  clearTokens(email || undefined);
+  console.log(`[auth] Tokens cleared${email ? ` for ${email}` : ' (all)'}`);
+  res.json({ success: true });
 });
 
 module.exports = router;

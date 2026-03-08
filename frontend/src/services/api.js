@@ -45,6 +45,17 @@ export async function googleLogin(code) {
   return data; // { name, email, picture, accessToken }
 }
 
+/**
+ * Tell the backend to clear stored Google credentials for this user.
+ */
+export async function googleLogout(email) {
+  try {
+    await api.post('/auth/logout', { email });
+  } catch {
+    // Best-effort; don't block frontend logout if backend is down
+  }
+}
+
 // ──────────── Chat ────────────
 
 /**

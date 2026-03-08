@@ -13,7 +13,7 @@
  */
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { googleLogin, setAuthToken, setUserEmail } from '../services/api';
+import { googleLogin, googleLogout, setAuthToken, setUserEmail } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -64,12 +64,17 @@ export function AuthProvider({ children }) {
   /**
    * Log out: clear user state and remove the auth header.
    */
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    // Clear backend stored Google credentials first
+    const email = user?.email;
     setAuthToken(null);
     setUserEmail(null);
     localStorage.removeItem('agent_m_user');
     setUser(null);
-  }, []);
+    if (email) {
+      await googleLogout(email);
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

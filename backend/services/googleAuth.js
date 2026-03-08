@@ -88,11 +88,26 @@ function getTokensByEmail(email) {
   return tokenStore.get(email) || null;
 }
 
+/**
+ * Remove stored tokens for a user (logout).
+ * If email is provided, removes only that entry; otherwise clears all.
+ *
+ * @param {string} [email]
+ */
+function clearTokens(email) {
+  if (email) {
+    tokenStore.delete(email);
+  } else {
+    tokenStore.clear();
+  }
+}
+
 module.exports = {
   createOAuth2Client,
   exchangeCodeForTokens,
   getTokensByAccessToken,
   getTokensByEmail,
+  clearTokens,
   tokenStore,
   CLIENT_ID,
   CLIENT_SECRET,
