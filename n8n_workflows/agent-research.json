@@ -1,0 +1,68 @@
+{
+  "name": "agent-research",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        -112
+      ],
+      "id": "1e30d3d8-5439-470e-990c-76db1dda452d",
+      "name": "When Executed by Another Workflow",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "message",
+              "value": "agent-research working perfectly",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0e807a21-e18d-4d55-86a0-ec2e4adb92e7",
+      "name": "Return Status Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -208,
+        112
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Return Status Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fd075550-2206-4848-8ea7-26c2edefe1f9",
+  "meta": {
+    "instanceId": "e2cc20001a7bf374378dc48bece60cf5f3d6412e01d593bd748617b31aa4f067"
+  },
+  "id": "gHMoG7wL844POh0b",
+  "tags": []
+}

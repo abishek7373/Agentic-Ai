@@ -1,0 +1,256 @@
+{
+  "name": "agent-email-summarizer",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        96
+      ],
+      "id": "e9e42e17-ad8c-49c6-a33e-79a07e125049",
+      "name": "When Executed by Another Workflow",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "message",
+              "value": "agent-email-summarizer working perfectly",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e2593423-c4f5-4848-b460-3e969278e77c",
+      "name": "Return Status Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -144,
+        208
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b7d431d8-65fd-469d-aabe-801d9bd74680",
+              "name": "messages",
+              "value": "={{ $json.messages }}",
+              "type": "string"
+            },
+            {
+              "id": "52e3a306-9357-4b1f-b5f0-5652d9788163",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ba37d9d5-df28-4cfe-8123-85ec5c91d951",
+      "name": "Prepare Email Text",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        496,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "summary",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "07d4aa1f-cd27-4d0e-aff5-287205b4c5e2",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1072,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://10.64.57.213:5000/gmail/unread",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6aa9f9ce-572b-4c2b-b8c7-e42dc2baa0b0",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama3:8b",
+          "mode": "list",
+          "cachedResultName": "llama3:8b"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an intelligent email analysis assistant.\n\nYour task is to analyze a list of unread emails and produce a structured summary.\nFollow these instructions strictly.\n\n1. Read every email carefully.\n2. Classify each email by importance using these categories:\n\nHIGH → urgent matters, deadlines, meetings, approvals, direct requests\nMEDIUM → updates, project discussions, work-related information\nLOW → newsletters, promotions, automated notifications\n\n3. For each email extract the following:\n\n• subject\n• sender\n• clear readable summary of the email\n• action_required (write the task if one exists, otherwise write \"None\")\n\n4. The summary must be concise but still include all important details such as:\n   • deadlines\n   • meetings\n   • tasks\n   • important updates\n\n5. Every email MUST appear in exactly one category.\n\n6. Do not invent or assume information that is not present.\n\n7. Return ONLY valid JSON.\n\n8. Do NOT include explanations, text, comments, markdown, or code blocks.\n\nThe output MUST match this exact structure:\n\n{\n\"summary\": {\n\"high_priority\": [\n{\n\"subject\": \"\",\n\"sender\": \"\",\n\"summary\": \"\",\n\"action_required\": \"\"\n}\n],\n\"medium_priority\": [\n{\n\"subject\": \"\",\n\"sender\": \"\",\n\"summary\": \"\",\n\"action_required\": \"\"\n}\n],\n\"low_priority\": [\n{\n\"subject\": \"\",\n\"sender\": \"\",\n\"summary\": \"\",\n\"action_required\": \"\"\n}\n]\n}\n}\n\nIf a category has no emails, return an empty array.\n\nAnalyze the following emails and return the JSON summary:\n\n{{ $json.messages }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        736,
+        -224
+      ],
+      "id": "4b9d14b9-5115-47d1-ba4b-4145914276f4",
+      "name": "Message a model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "77hzUs4YLEuNCeQ2",
+          "name": "Ollama account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        -304
+      ],
+      "id": "7635f906-516e-4ecf-a441-9c324d8f5a8a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an intelligent email analysis assistant.\n\nYour task is to analyze a list of unread emails and produce a structured summary.\nFollow these instructions strictly.\n\n1. Read every email carefully.\n2. Classify each email by importance using these categories:\n\nHIGH → urgent matters, deadlines, meetings, approvals, direct requests\nMEDIUM → updates, project discussions, work-related information\nLOW → newsletters, promotions, automated notifications\n\n3. For each email extract the following:\n\n• subject\n• sender\n• clear readable summary of the email\n• action_required (write the task if one exists, otherwise write \"None\")\n\n4. The summary must be concise but still include all important details such as:\n   • deadlines\n   • meetings\n   • tasks\n   • important updates\n\n5. Every email MUST appear in exactly one category.\n\n6. Do not invent or assume information that is not present.\n\n7. Return ONLY valid JSON.\n\n8. Do NOT include explanations, text, comments, markdown, or code blocks.\n\nThe output MUST match this exact structure:\n\n{\n\"summary\": {\n\"high_priority\": [\n{\n\"subject\": \"\",\n\"sender\": \"\",\n\"summary\": \"\",\n\"action_required\": \"\"\n}\n],\n\"medium_priority\": [\n{\n\"subject\": \"\",\n\"sender\": \"\",\n\"summary\": \"\",\n\"action_required\": \"\"\n}\n],\n\"low_priority\": [\n{\n\"subject\": \"\",\n\"sender\": \"\",\n\"summary\": \"\",\n\"action_required\": \"\"\n}\n]\n}\n}\n\nIf a category has no emails, return an empty array.\n\nAnalyze the following emails and return the JSON summary:\n\n{{ $json.messages }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        704,
+        16
+      ],
+      "id": "13d5eaa2-fbec-4906-aa3b-abf7645055e1",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "RdyKfqhAuJLP7XLn",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Prepare Email Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Email Text": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        []
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9b7d82b7-8747-4259-abef-c165bbadedd9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e2cc20001a7bf374378dc48bece60cf5f3d6412e01d593bd748617b31aa4f067"
+  },
+  "id": "W0iQb5K6BwdfxZKv",
+  "tags": []
+}

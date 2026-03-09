@@ -1,0 +1,68 @@
+{
+  "name": "agent-calendar-scheduler",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "73fea69b-ba20-44b7-819e-4187e41d6f59",
+      "name": "When Executed by Another Workflow",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "message",
+              "value": "agent-calendar-scheduler agent  working perfectly",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "696cf6a2-1957-4e04-9251-c3becef1778c",
+      "name": "Return Status Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        224
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Return Status Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e5bb9a37-b78a-4bf0-a698-8d9056ebef4a",
+  "meta": {
+    "instanceId": "e2cc20001a7bf374378dc48bece60cf5f3d6412e01d593bd748617b31aa4f067"
+  },
+  "id": "G8VfXbSMHWx2Dsdt",
+  "tags": []
+}

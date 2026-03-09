@@ -1,0 +1,68 @@
+{
+  "name": "agent-email-composer",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -176,
+        16
+      ],
+      "id": "2e21a6e2-4ffe-4b32-9cff-f8fc7c6be713",
+      "name": "When Executed by Another Workflow",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "message",
+              "value": "agent-email-composer working perfectly",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "607cbd9b-4b5b-4069-898b-4eb9eb1b663e",
+      "name": "Return Status Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        240
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Return Status Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b83ee5bc-a60b-4372-a103-0a5e594b1197",
+  "meta": {
+    "instanceId": "e2cc20001a7bf374378dc48bece60cf5f3d6412e01d593bd748617b31aa4f067"
+  },
+  "id": "5bXqWRZuYC2hia0n",
+  "tags": []
+}
