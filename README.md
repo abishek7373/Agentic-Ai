@@ -120,43 +120,90 @@ This architecture enables adding new agents (e.g., Slack, Jira, CRM) without mod
 
 The AI orchestration layer runs entirely inside **n8n**, an open-source workflow automation tool. It follows a **Webhook → Classify → Route → Execute → Respond** pipeline.
 
-### Orchestrator Workflow
+All workflow JSON files are located in the `n8n_workflows/` directory and can be imported directly into any n8n instance.
+
+### Orchestrator Workflow (`main-orchestration.json`)
 
 ```
 Webhook Trigger (POST /webhook/agent)
         │
         ▼
+ ┌──────────────────┐
+ │  Message a model  │   Ollama node using llama3:latest
+ │  (Intent Classify) │   Prompt: "Classify into exactly ONE intent:
+ │                    │   email_summary, email_compose, calendar_schedule,
+ │                    │   reminder_create, research_query"
+ └──────┬───────────┘
+        │
+        ▼
  ┌──────────────┐
- │   Intent      │   Uses Llama 3 (via Ollama or n8n AI node) to classify
- │   Classifier  │   the user message into one of: email_summary,
- │               │   email_compose, calendar_schedule, research, general
+ │  Edit Fields  │   Extracts the classified intent string
  └──────┬───────┘
         │
         ▼
  ┌──────────────┐
- │   Switch      │   Routes based on the classified intent string
- │   Router      │
+ │  Agent Router │   Switch node — routes on exact string match
+ │  (Switch)     │
  └──┬───┬───┬───┘
     │   │   │   │
     ▼   ▼   ▼   ▼
  ┌────┐┌────┐┌────┐┌────────┐
- │ ES ││ EC ││ CS ││Research │    ES = Email Summarizer
- └──┬─┘└──┬─┘└──┬─┘└──┬─────┘    EC = Email Composer
-    │      │     │     │          CS = Calendar Scheduler
+ │ ES ││ EC ││ CS ││Research │    ES = Execute Email Summarizer
+ └──┬─┘└──┬─┘└──┬─┘└──┬─────┘    EC = Execute Email Composer
+    │      │     │     │          CS = Execute Calendar Scheduler
     ▼      ▼     ▼     ▼
+ ┌──────────────────────────┐
+ │  Format Response          │   Sets { status: "success", result }
+ └──────────┬───────────────┘
+            │
+            ▼
  ┌──────────────────────────┐
  │  Respond to Webhook      │   Sends JSON back to the Express backend
  └──────────────────────────┘
 ```
 
+**Intent Classification Prompt (from `main-orchestration.json`):**
+
+```
+You are an intent classification system.
+
+Classify the user request into exactly ONE of the following intents:
+
+email_summary
+email_compose
+calendar_schedule
+reminder_create
+research_query
+
+Rules:
+- Return ONLY the intent name.
+- Do NOT explain.
+- Do NOT add extra text.
+
+User message:
+{{ $json.body.message }}
+```
+
 ### Agent Workflows
 
-| Agent | Trigger | What It Does |
-|---|---|---|
-| **Email Summarizer** | `email_summary` | Calls Gmail API to fetch unread messages → passes them to Llama 3 with a summarization prompt → returns a JSON object with `high_priority`, `medium_priority`, `low_priority` buckets. |
-| **Email Composer** | `email_compose` | Takes the user's raw text → sends it to Llama 3 for professional formatting → optionally sends the email via Gmail API → returns the formatted draft. |
-| **Calendar Scheduler** | `calendar_schedule` | Parses title, date, time, and attendees from the user's message → calls Google Calendar API to create an event → returns event link. |
-| **Research Agent** | `research` | Accepts a research query → performs web searches via n8n HTTP/Search nodes → summarizes findings with Llama 3 → returns structured research output. |
+| Agent | File | Trigger Intent | Node Pipeline |
+|---|---|---|---|
+| **Email Summarizer** | `agent-email-summarizer.json` | `email_summary` | HTTP Request (GET `/gmail/unread`) → Prepare Email Text → Gemini 2.5 Flash (summarize & classify by priority) → Format Response |
+| **Email Composer** | `agent-email-composer.json` | `email_compose` | Execute Workflow Trigger → Return Status Message _(stub — ready for expansion)_ |
+| **Calendar Scheduler** | `agent-calendar-scheduler.json` | `calendar_schedule` | Execute Workflow Trigger → Return Status Message _(stub — ready for expansion)_ |
+| **Research Agent** | `agent-research.json` | `research_query` | Execute Workflow Trigger → Return Status Message _(stub — ready for expansion)_ |
+
+### Email Summarizer Agent (Detail)
+
+This is the most complete agent workflow. Its pipeline:
+
+1. **Triggered** by the orchestrator via `executeWorkflow` with `{ message, userEmail }`.
+2. **HTTP Request** — calls `GET /gmail/unread` on the Express backend to fetch unread emails.
+3. **Prepare Email Text** — extracts the `messages` array from the HTTP response.
+4. **Google Gemini 2.5 Flash** — sends the email text to the LLM with a structured prompt that classifies each email into `high_priority`, `medium_priority`, or `low_priority` with fields: `subject`, `sender`, `summary`, `action_required`.
+5. **Format Response** — extracts the `content` field from the LLM output as `summary`.
+
+> **Note:** The email summarizer has an Ollama/Llama 3 node available (currently disabled) and uses **Google Gemini 2.5 Flash** as the active LLM for higher-quality structured JSON output.
 
 ### Webhook ↔ Backend Contract
 
@@ -213,6 +260,7 @@ The `n8nService.js` on the backend normalizes this into `{ response, raw }` befo
 | **n8n** | Visual workflow automation — orchestrates agent pipelines |
 | **Ollama** | Local LLM inference server |
 | **Llama 3** | Large language model for intent classification, summarization, email formatting |
+| **Google Gemini 2.5 Flash** | Cloud LLM used by the email summarizer agent for structured JSON output |
 
 ### External APIs
 
@@ -286,11 +334,12 @@ Agent_m/
 │       ├── n8nService.js        # Forwards messages to n8n webhook
 │       └── ollamaService.js     # Ollama API wrapper (format, generate)
 │
-└── n8n-workflows/               # (export directory for n8n JSON files)
-    ├── orchestrator.json        # Main webhook + intent classifier + router
-    ├── email-agent.json         # Email summarizer & composer agent
-    ├── calendar-agent.json      # Calendar scheduling agent
-    └── research-agent.json      # Web research agent
+└── n8n_workflows/                       # Exported n8n workflow JSON files
+    ├── main-orchestration.json          # Webhook → Intent Classifier (Llama 3) → Switch Router → Agent dispatch
+    ├── agent-email-summarizer.json      # Fetches unread Gmail → Gemini 2.5 Flash summarization → priority JSON
+    ├── agent-email-composer.json        # Formats & sends professional emails (sub-workflow stub)
+    ├── agent-calendar-scheduler.json    # Creates Google Calendar events (sub-workflow stub)
+    └── agent-research.json              # Web research agent (sub-workflow stub)
 ```
 
 ---
@@ -796,13 +845,20 @@ docker run -it --rm \
   n8nio/n8n
 ```
 
-Once n8n is running, import the workflow JSON files from the `n8n-workflows/` directory:
+Once n8n is running, import the workflow JSON files from the `n8n_workflows/` directory:
 
 1. Open n8n at `http://localhost:5678`.
 2. Go to **Workflows → Import from File**.
-3. Import `orchestrator.json`, `email-agent.json`, `calendar-agent.json`, and `research-agent.json`.
-4. Activate the orchestrator workflow.
-5. Verify the webhook URL matches the `N8N_WEBHOOK_URL` in your backend `.env`.
+3. Import each workflow file:
+   - `main-orchestration.json` — the central orchestrator
+   - `agent-email-summarizer.json` — email summary agent
+   - `agent-email-composer.json` — email composition agent
+   - `agent-calendar-scheduler.json` — calendar scheduling agent
+   - `agent-research.json` — research agent
+4. Configure the **Ollama** credential in n8n (pointing to your Ollama instance).
+5. Configure the **Google Gemini API** credential in n8n (used by the email summarizer).
+6. **Activate** the `main-orchestration` workflow.
+7. Verify the webhook URL matches the `N8N_WEBHOOK_URL` in your backend `.env`.
 
 ---
 
